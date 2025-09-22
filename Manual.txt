@@ -1,0 +1,118 @@
+📘 Manual de Usuario
+
+Procesador de Imágenes LAMBOL S.A.
+
+------------------------------------------------------------------------
+
+1. Introducción
+
+El Procesador de Imágenes es una aplicación
+desarrollada por LAMBOL S.A. para automatizar el renombrado y
+redimensionado de imágenes.
+
+Su objetivo principal es: - Buscar imágenes que terminen con el sufijo
+_2 antes de la extensión (ejemplo: foto_2.jpg).
+- Renombrarlas quitando el sufijo (foto.jpg).
+- Redimensionarlas al tamaño que el usuario indique.
+- Guardarlas en una carpeta de destino, evitando duplicados.
+
+------------------------------------------------------------------------
+
+2. Requisitos del sistema
+
+-   Sistema operativo: Windows 10 o superior.
+-   No es necesario tener Python instalado si usas el archivo .exe
+    generado.
+-   Espacio libre suficiente en disco para almacenar las imágenes
+    procesadas.
+
+------------------------------------------------------------------------
+
+3. Archivos incluidos
+
+En la carpeta de la aplicación encontrarás:
+- ProcesadorImagenes.exe → El programa principal listo para ejecutar.
+- icono.ico → Icono oficial de la aplicación.
+- manual.txt → Este documento de ayuda.
+
+------------------------------------------------------------------------
+
+4. Instrucciones de uso
+
+4.1 Abrir la aplicación
+
+-   Haz doble clic en el archivo ProcesadorImagenes.exe.
+-   Se abrirá una ventana con el logotipo de LAMBOL S.A. y la interfaz
+    del programa.
+
+4.2 Seleccionar carpetas de origen
+
+1.  Pulsa ➕ Agregar carpeta.
+2.  Selecciona la carpeta que contiene las imágenes a procesar.
+3.  Repite el paso si deseas agregar varias carpetas.
+4.  Si quieres limpiar la lista, pulsa 🗑️ Limpiar lista.
+
+Las carpetas seleccionadas se mostrarán en un panel dentro de la
+aplicación.
+
+4.3 Configurar tamaño de salida
+
+-   En la sección Configuración de salida, introduce el Ancho y Alto en
+    píxeles.
+    -   Ejemplo: 720 x 500.
+-   El programa redimensionará todas las imágenes procesadas a ese
+    tamaño.
+
+4.4 Procesar imágenes
+
+1.  Pulsa 🚀 Procesar imágenes.
+2.  Selecciona la carpeta donde se guardarán las imágenes procesadas.
+3.  El programa realizará los siguientes pasos automáticamente:
+    -   Buscará imágenes con sufijo _2.
+    -   Las renombrará quitando el sufijo.
+    -   Las redimensionará al tamaño indicado.
+    -   Las guardará en la carpeta de destino.
+    -   Evitará duplicados (no guarda dos veces el mismo archivo).
+
+4.5 Mensaje final
+
+-   Al terminar, aparecerá una ventana informando cuántas imágenes
+    fueron procesadas y dónde se guardaron.
+-   En la parte inferior (barra de estado), también verás un resumen con
+    las cantidades.
+
+------------------------------------------------------------------------
+
+5. Ejemplo práctico
+
+1.  Tienes en la carpeta C:\FotosOriginales las imágenes:
+
+    -   paisaje_2.jpg
+    -   familia_2.png
+    -   perro.jpg
+
+2.  Abres el programa, seleccionas esa carpeta y configuras tamaño 800 x
+    600.
+
+3.  Al procesar y guardar en C:\FotosEditadas, obtendrás:
+
+    -   paisaje.jpg (redimensionado a 800x600).
+    -   familia.png (redimensionado a 800x600).
+    -   perro.jpg no se procesa porque no termina en _2.
+
+------------------------------------------------------------------------
+
+6. Errores comunes
+
+-   No seleccionaste carpeta de origen → El programa te mostrará un
+    error.
+-   Valores inválidos en ancho o alto → Deben ser números enteros.
+-   El archivo no es imagen → Solo se admiten:
+    .jpg, .jpeg, .png, .bmp, .gif, .tiff, .webp.
+
+------------------------------------------------------------------------
+
+7. Soporte
+
+En caso de dudas o problemas, contacta con el área de sistemas de LAMBOL
+S.A.
