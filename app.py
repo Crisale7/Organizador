@@ -9,7 +9,7 @@ from tkinter import TclError
 from tkinter import Text
 from PIL import Image, ImageTk
 import tkinter.ttk as ttk
-import openpyxl   # <-- NUEVO
+import openpyxl   # <-- exportar a Excel
 
 # -----------------------------
 #   LÓGICA ORIGINAL
@@ -24,7 +24,7 @@ except AttributeError:
 
 carpetas_seleccionadas = []
 seleccion_idx = None
-imagenes_procesadas = []  # <-- guardaremos las imágenes procesadas para exportar
+imagenes_procesadas = []  # <-- ahora guarda solo nombres de archivo
 
 def seleccionar_carpeta():
     carpeta = filedialog.askdirectory(title="Seleccionar carpeta (una a la vez)")
@@ -96,7 +96,7 @@ def procesar_imagenes():
                             img.save(ruta_destino)
 
                             nombres_guardados.add(nuevo_nombre.lower())
-                            imagenes_procesadas.append((nuevo_nombre, ruta_origen, ruta_destino))  # guardar info
+                            imagenes_procesadas.append(nuevo_nombre)  # <-- solo guardo el nombre
                     except Exception as e:
                         print(f"Error procesando '{ruta_origen}': {e}")
 
@@ -107,7 +107,7 @@ def procesar_imagenes():
     status_var.set(f"Procesadas: {len(nombres_guardados)} • Total Encontradas: {total_encontradas}")
 
 def exportar_excel():
-    """Exporta listado de imágenes procesadas a Excel"""
+    """Exporta listado de imágenes procesadas a Excel (solo 'Nombre de archivo')."""
     if not imagenes_procesadas:
         messagebox.showwarning("Sin datos", "Aún no has procesado imágenes para exportar.")
         return
@@ -123,10 +123,13 @@ def exportar_excel():
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Imágenes procesadas"
-    ws.append(["Nombre de archivo", "Ruta original", "Ruta destino"])
 
-    for nombre, origen, destino in imagenes_procesadas:
-        ws.append([nombre, origen, destino])
+    # Encabezado de una sola columna
+    ws.append(["Nombre de archivo"])
+
+    # Filas: solo el nombre
+    for nombre in imagenes_procesadas:
+        ws.append([nombre])
 
     try:
         wb.save(archivo_excel)
@@ -291,7 +294,7 @@ ttk.Label(card_size, text="", style="Card.TFrame").grid(row=5, column=0, columns
 btn_procesar = ttk.Button(card_size, text="🚀 Procesar imágenes", command=procesar_imagenes)
 btn_procesar.grid(row=6, column=0, columnspan=2, sticky="ew", pady=(4, 0))
 
-# NUEVO BOTÓN DE EXPORTAR
+# Botón de exportar Excel (una sola columna)
 btn_exportar = ttk.Button(card_size, text="📊 Exportar listado a Excel", command=exportar_excel)
 btn_exportar.grid(row=7, column=0, columnspan=2, sticky="ew", pady=(6, 0))
 
