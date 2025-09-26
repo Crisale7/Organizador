@@ -51,6 +51,12 @@ def eliminar_seleccionada():
         status_var.set(f"Carpeta eliminada: {borrada} • Restantes: {len(carpetas_seleccionadas)}")
 
 def procesar_imagenes():
+    """
+    Procesa sólo archivos con base que termine en '_2', extrae el primer patrón
+    de código 'n - n - n' (permitiendo espacios y diferentes guiones), normaliza a
+    'n-n-n', redimensiona y guarda con el nuevo nombre (sólo números y guiones).
+    Ejemplo: '3 - 002 - 0017 _ XANTATO Z-14_2' -> '3-002-0017.jpg'
+    """
     global imagenes_procesadas
     imagenes_procesadas = []
 
@@ -69,19 +75,40 @@ def procesar_imagenes():
         messagebox.showerror("Error", "Ingresa valores numéricos válidos para ancho y alto.")
         return
 
+    # Acepta -, – (en dash) y — (em dash); ignora espacios alrededor
+    patron_codigo = re.compile(r'(\d+)\s*[-–—]\s*(\d+)\s*[-–—]\s*(\d+)', re.UNICODE)
+
     nombres_guardados = set()
     total_encontradas = 0
+    total_sin_codigo = 0
+    total_procesadas = 0
 
     for carpeta in carpetas_seleccionadas:
         for root, _, files in os.walk(carpeta):
             for file in files:
                 base, ext = os.path.splitext(file)
                 ext_low = ext.lower()
+
+                # Filtrar por extensión válida y que termine en _2
                 if ext_low in EXTENSIONS and re.search(r"_2$", base):
                     total_encontradas += 1
-                    nuevo_base = re.sub(r"_2$", "", base)
+
+                    # 1) quitar el sufijo _2
+                    base_sin_2 = re.sub(r"_2$", "", base)
+
+                    # 2) extraer el código n[-–—]n[-–—]n (ignorando espacios)
+                    m = patron_codigo.search(base_sin_2)
+                    if not m:
+                        total_sin_codigo += 1
+                        continue  # omite archivos sin patrón
+
+                    # 3) normalizar a g1-g2-g3
+                    g1, g2, g3 = m.groups()
+                    nuevo_base = f"{g1}-{g2}-{g3}"
+
                     nuevo_nombre = f"{nuevo_base}{ext_low}"
 
+                    # Evitar duplicados por nombre final
                     if nuevo_nombre.lower() in nombres_guardados:
                         continue
 
@@ -90,21 +117,31 @@ def procesar_imagenes():
 
                     try:
                         with Image.open(ruta_origen) as img:
+                            # Convertir JPEG con alfa a RGB
                             if ext_low in (".jpg", ".jpeg") and img.mode in ("RGBA", "LA", "P"):
                                 img = img.convert("RGB")
+                            # Redimensionar y guardar
                             img = img.resize((width, height), RESAMPLE)
                             img.save(ruta_destino)
 
                             nombres_guardados.add(nuevo_nombre.lower())
-                            imagenes_procesadas.append(nuevo_nombre)  # <-- solo guardo el nombre
+                            imagenes_procesadas.append(nuevo_nombre)
+                            total_procesadas += 1
+
                     except Exception as e:
                         print(f"Error procesando '{ruta_origen}': {e}")
 
     messagebox.showinfo(
         "Proceso finalizado",
-        f"Se guardaron {len(nombres_guardados)} imágenes en:\n{carpeta_destino}\n\n"
+        (
+            f"Se procesaron {total_procesadas} imágenes en:\n{carpeta_destino}\n\n"
+            f"Encontradas con '_2': {total_encontradas}\n"
+            f"Sin código n-n-n: {total_sin_codigo}\n"
+        )
     )
-    status_var.set(f"Procesadas: {len(nombres_guardados)} • Total Encontradas: {total_encontradas}")
+    status_var.set(
+        f"Procesadas: {total_procesadas} • Con '_2': {total_encontradas} • Sin código: {total_sin_codigo}"
+    )
 
 def exportar_excel():
     """Exporta listado de imágenes procesadas a Excel (solo 'Nombre de archivo')."""
